@@ -30,19 +30,19 @@ Zulfiqar Rahman Aji (05111942000019)
         
 	else if (child <= 10) {
         	while ((wait(&status)) <= 10);
-        	sleep (5); //program with interval time 5s
         	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Musyik", NULL};
         	execv ("/bin/mkdir", argv); }
         	
 	else if (child >= 10) { 
 		while ((wait(&status)) >= 10);
-        	sleep (5); //program with interval time 5s
         	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Fylm", NULL};
         	execv ("/bin/mkdir", argv);
 ```
 
-First make a program run fail if the condition the program running this ``if (child < 0) { exit(EXIT_FAILURE);``.
+First make a program run fail if the condition the program running this ``if (child < 0) { exit(EXIT_FAILURE);``
 
-We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``else if (child <= 10)`` for folder Musyik, and ``else if (child >= 10) for folder Fylm``.
+We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``else if (child <= 10)`` for folder Musyik, and ``else if (child >= 10) for folder Fylm``
 
-To make the folder coming out we need to do system call ``wait`` ``fork`` ``exec``.
+To make the folder coming out we need to do system call ``wait`` and ``fork`` ``exec``
+
+
