@@ -13,7 +13,7 @@ Zulfiqar Rahman Aji (05111942000019)
 
 
 ## PROBLEM 1
-**a. Show The Folder named Musyik, Fylm, Pyoto**
+**a. Show The Folder Named Musyik, Fylm, Pyoto**
 
 ```
 	if (child == 0) {
@@ -39,10 +39,13 @@ Zulfiqar Rahman Aji (05111942000019)
         	execv ("/bin/mkdir", argv);
 ```
 
-First make a program run fail if the condition the program running this ``if (child < 0) { exit(EXIT_FAILURE);``
+First make a program run fail if the condition the program running this ``if (child < 0) { exit(EXIT_FAILURE)``
 
 We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``else if (child <= 10)`` for folder Musyik, and ``else if (child >= 10)`` for folder Fylm.
 
 To make the folder coming out we need to do system call ``wait`` and ``fork`` ``exec``
 
+<img width="350" alt="soal1a" src="https://user-images.githubusercontent.com/73702347/115102675-8e763180-9f76-11eb-88c3-cd6fda69f2b0.png">
+
+**b. Download Files for Each Folder**
 
