@@ -128,4 +128,18 @@ void directory()
   }
 }
 ```
-In problem 3A, we are needed to make a directory with a name according to the timestamp, As we can see above, I already take the code for 3A from the source code, the first thing that I do is to make the format name for the directory, I use `struct tm *` command to get the localtime from my laptop, after that I use `strftime` command to break down the time so it will go like the format that the question want. And then I will get the format name for the directory that will be made by this `void directory()` function.
+In problem 3A, we are needed to make a directory with a name according to the timestamp, As we can see above, I already take the code for 3A from the source code, the first thing that I do is to make the format name for the directory, I use `struct tm *` command to get the localtime from my laptop, after that I use `strftime` command to break down the time so it will go like the format that the question want. And then I will get the format name for the directory that will be made by this `void directory()` function. And then to make the directory for every 40 seconds I will use `sleep` command in the main function like this
+```
+int main(int argc, char *argv[])
+{
+  int status
+    
+  while(wait(&status) > 0);
+  
+  while(1)
+  {
+    directory();
+    sleep(40);
+  }
+}
+```
