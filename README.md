@@ -14,3 +14,35 @@ Zulfiqar Rahman Aji (05111942000019)
 
 ## PROBLEM 1
 **a. Show The Folder named Musyik, Fylm, Pyoto**
+
+```
+	if (child == 0) {
+	        pid_t child = fork();
+        
+        if (child < 0) {
+		exit(EXIT_FAILURE);
+	} 
+    }
+    
+	if (child == 0) { 
+    		char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Pyoto", NULL};
+        	execv("/bin/mkdir", argv); }
+        
+	else if (child <= 10) {
+        	while ((wait(&status)) <= 10);
+        	sleep (5); //program with interval time 5s
+        	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Musyik", NULL};
+        	execv ("/bin/mkdir", argv); }
+        	
+	else if (child >= 10) { 
+		while ((wait(&status)) >= 10);
+        	sleep (5); //program with interval time 5s
+        	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Fylm", NULL};
+        	execv ("/bin/mkdir", argv);
+```
+
+First make a program run fail if the condition the program running this ``if (child < 0) { exit(EXIT_FAILURE);``.
+
+We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``else if (child <= 10)`` for folder Musyik, and ``else if (child >= 10) for folder Fylm``.
+
+To make the folder coming out we need to do system call ``wait`` ``fork`` ``exec``.
