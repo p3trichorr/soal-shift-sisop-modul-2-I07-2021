@@ -45,7 +45,7 @@ We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``els
 
 To make the folder coming out we need to do system call ``wait`` and ``fork`` ``exec``
 
-<img width="350" alt="soal1a" src="https://user-images.githubusercontent.com/73702347/115102675-8e763180-9f76-11eb-88c3-cd6fda69f2b0.png">
+<img width="375" alt="soal1a" src="https://user-images.githubusercontent.com/73702347/115103100-676d2f00-9f79-11eb-823d-defc8f7458ed.png">
 
 **b. Download Files for Each Folder**
 
