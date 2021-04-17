@@ -104,7 +104,6 @@ Finally the code then removed all the folder that is not a jpeg file using the `
 void directory()
 {
   pid_t child_id;
-  int status;
   char datedirectory[100];
   struct tm *timenow;
   
@@ -132,7 +131,7 @@ In problem 3A, we are needed to make a directory with a name according to the ti
 ```
 int main(int argc, char *argv[])
 {
-  int status
+  int status;
     
   while(wait(&status) > 0);
   
