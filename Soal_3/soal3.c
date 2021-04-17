@@ -37,5 +37,13 @@ void directory()
 //Main function
 int main(int argc, char *argv[])
 {
-  directory();
+  int status
+    
+  while(wait(&status) > 0);
+  
+  while(1)
+  {
+    directory();
+    sleep(40);
+  }
 }
