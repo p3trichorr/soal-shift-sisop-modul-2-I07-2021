@@ -75,6 +75,7 @@ if ((chdir("/home/salma/Modul2") <0)) {
  		execv ("/bin/wget", argv); 
  	}   
 ```
+We need to download each folder from gdrive that given 
 
 ## PROBLEM 2
 **a. Make a folder, Extract the zip folder and Delete folders else then the jpeg's**
