@@ -1,1 +1,16 @@
 # soal-shift-sisop-modul-2-I07-2021
+
+Made by:
+
+Group I07
+
+Gede Yoga Arisudana (051119420000098)
+
+Salma Rahma Lailia (05111942000016)
+
+Zulfiqar Rahman Aji (05111942000019)
+
+
+
+## PROBLEM 1
+**a. Show The Folder named Musyik, Fylm, Pyoto**
