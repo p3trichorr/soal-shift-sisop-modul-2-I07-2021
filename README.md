@@ -173,7 +173,7 @@ void download(datedirectory)
       timenow = localtime(&t_photo);
       strftime(datephoto, sizeof(datephoto), "%Y-%m-%d_%H:%M:%S", timenow);
       
-      //
+      //Make format to download the photos including the size of the photos
       sprintf(link , "https://picsum.photos/%ld", (t_photo % 1000) + 50);
 
       pid_t child_id_datephoto
