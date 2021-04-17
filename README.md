@@ -41,7 +41,7 @@ Zulfiqar Rahman Aji (05111942000019)
 
 First make a program run fail if the condition the program running this ``if (child < 0) { exit(EXIT_FAILURE);``
 
-We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``else if (child <= 10)`` for folder Musyik, and ``else if (child >= 10) for folder Fylm``
+We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``else if (child <= 10)`` for folder Musyik, and ``else if (child >= 10)`` for folder Fylm.
 
 To make the folder coming out we need to do system call ``wait`` and ``fork`` ``exec``
 
