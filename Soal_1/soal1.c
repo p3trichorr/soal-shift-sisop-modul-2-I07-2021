@@ -35,5 +35,29 @@ int main () {
         	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Fylm", NULL};
         	execv ("/bin/mkdir", argv);
         }
-        
+	
+	if ((chdir("/home/salma/Modul2") <0)) {
+ 		exit (EXIT_FAILURE); }
+ 	
+	if (fork () == 0) { 
+		char web [100];
+		sprintf (web, "https://drive.google.com/file/d/1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD/view?usp=sharing"); 
+		char name[100];
+		char *argv[]={"wget", web, "-qO", name, NULL};
+ 		execv ("/bin/wget", argv); }
+ 	
+	if (fork () == 0) {
+        	char web [100];
+		sprintf (web, "https://drive.google.com/file/d/1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J/view?usp=sharing");
+		char name[100];
+		char *argv[]={"wget", web, "-qO", name, NULL};
+ 		execv ("/bin/wget", argv); }
+ 	
+	if (fork () == 0) { 
+		char web [100];
+		sprintf (web, "https://drive.google.com/file/d/1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp/view?usp=sharing");
+		char name[100];
+		char *argv[]={"wget", web, "-qO", name, NULL};
+ 		execv ("/bin/wget", argv); 
+ 	}   
     }
