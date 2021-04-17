@@ -49,11 +49,8 @@ To make the folder coming out we need to do system call ``wait`` and ``fork`` ``
 
 **b. Download Files for Each Folder**
 
+
 ## PROBLEM 2
-
-
-
-## PROBLEM 3
 **a. Make a folder, Extract the zip folder and Delete folders else then the jpeg's**
 
 ```
@@ -98,3 +95,37 @@ The code was then continued with the `unzip` command specifying `pets` to unzip 
     	execv("/usr/bin/rm", argv);
 ```
 Finally the code then removed all the folder that is not a jpeg file using the `rm` command to remove and `-r` command to do it recursively.
+
+## PROBLEM 3
+
+**a. Make a directory every 40 seconds with a name according to the timestamp**
+```
+//3A - Make directory according to the format name
+void directory()
+{
+  pid_t child_id;
+  int status;
+  char datedirectory[100];
+  struct tm *timenow;
+  
+  //Save child_id from child process
+  child_id = fork();
+
+  //Make format name for the directory
+  time_t t = time(NULL);
+  timenow = localtime(&t);
+  strftime(datedirectory, sizeof(datedirectory), "%Y-%m-%d_%H:%M:%S", timenow);
+
+  if(child_id < 0) 
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if(child_id == 0) 
+  {
+    char *argv[] = {"mkdir", date, NULL};
+    execv("/bin/mkdir", argv);
+  }
+}
+```
+In problem 3A, we are needed to make a directory with a name according to the timestamp, As we can see above, I already take the code for 3A from the source code, the first thing that I do is to make the format name for the directory, I use `struct tm *` command to get the localtime from my laptop, after that I use `strftime` command to break down the time so it will go like the format that the question want. And then I will get the format name for the directory that will be made by this `void directory()` function.
