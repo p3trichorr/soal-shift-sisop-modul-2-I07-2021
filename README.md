@@ -188,7 +188,7 @@ void download(datedirectory)
       if(child_id_datephoto == 0)
       {
         char *argv[] = {"wget", link, "-O", datephoto, "-o", "/dev/null" NULL};
-        execv("/usr/bin/wget", argv);
+        execv("/bin/wget", argv);
       }
       //Wait 5 seconds to download another photo
       sleep(5);
