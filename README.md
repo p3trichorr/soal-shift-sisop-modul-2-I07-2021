@@ -100,11 +100,9 @@ Finally the code then removed all the folder that is not a jpeg file using the `
 
 **a. Make a directory every 40 seconds with a name according to the timestamp**
 ```
-//3A - Make directory according to the format name
-void directory()
+void directory(char datedirectory[])
 {
   pid_t child_id;
-  char datedirectory[100];
   struct tm *timenow;
   
   //Save child_id from child process
@@ -113,7 +111,7 @@ void directory()
   //Make format name for the directory
   time_t t = time(NULL);
   timenow = localtime(&t);
-  strftime(datedirectory, sizeof(datedirectory), "%Y-%m-%d_%H:%M:%S", timenow);
+  strftime(datedirectory, 100, "%Y-%m-%d_%H:%M:%S", timenow);
 
   if(child_id < 0) 
   {
@@ -131,14 +129,73 @@ In problem 3A, we are needed to make a directory with a name according to the ti
 ```
 int main(int argc, char *argv[])
 {
-  int status;
-    
-  while(wait(&status) > 0);
+  int status, status2;
   
   while(1)
   {
-    directory();
+    char datedirectory[100];
+    directory(datedirectory);
+    while(wait(&status) > 0);
+    
+    download(datedirectory);
+    while(wait(&status2) > 0);
+     
+    //Wait 40 seconds to make another directory
     sleep(40);
   }
 }
 ```
+
+**b. Download 10 photos for each directory**
+```
+void download(datedirectory)
+{
+  pid_t child_id;
+  char link[100];
+  struct tm *timenow;
+  char datephoto[100];
+  
+  child_id = fork();
+
+  if(child_id < 0) 
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  if(child_id == 0)
+  {
+    //Download photos to the directory that we want --> (downloaddirectory)
+    chdir(downloaddirectory);
+    for(int i = 0; i < 10; i++)
+    {
+      //Make format name for the photos
+      time_t t_photo = time(NULL);
+      timenow = localtime(&t_photo);
+      strftime(datephoto, sizeof(datephoto), "%Y-%m-%d_%H:%M:%S", timenow);
+      
+      //Download photos from the website
+      sprintf(link , "https://picsum.photos/%ld", (t_photo % 1000) + 50);
+
+      pid_t child_id_datephoto
+
+      child_id_datephoto = fork();
+
+      if(child_id_datephoto < 0)
+      {
+        exit(EXIT_FAILURE);
+      }
+
+      if(child_id_datephoto == 0)
+      {
+        char *argv[] = {"wget", link, "-O", datephoto, "-o", "/dev/null" NULL};
+        execv("/usr/bin/wget", argv);
+      }
+      //Wait 5 seconds to download another photo
+      sleep(5);
+    }
+    //Download photos to the next directory
+    chdir("..")
+  }
+}
+```
+In problem 3B, we are needed to download 10 photos for each directory, and each photo will be downloaded for every 5 seconds, the first thing I do is to choose the directory to be the place of the photo that will be downloaded, therefore I use `chdir(downloaddirectory)` command, after that I will make format name for the photo using `struct tm *` command to get the localtime from my laptop then I use `strftime` command to break down the time so it will go like the format that the question want. Now, I want to download the photos from the website using `sprintf` command and I will also use it to write the size of the photo that the question want. And now, in the child process in `char *argv[]` function, I write `{"wget", link, "-O", datephoto, "-o", "/dev/null" NULL}` to get the picture, I use `wget` so I can get the photo from the link, then I use `-O` so the output  will be seen in the `datephoto` directory or document, after that I use `-o` to log all the message or in this case the photos to the logfile, lastly I will use `"/dev/null"` so it will give the permission. After that, I will use `sleep` command, so eaxh photo will be downloaded for every 5 seconds. And the last thing that I will do is to use `chdir("..")` command, so the downloaded photo will be downloaded to the next directory or the new one.
