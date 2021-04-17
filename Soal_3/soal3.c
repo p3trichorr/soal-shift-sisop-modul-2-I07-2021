@@ -10,7 +10,6 @@
 void directory()
 {
   pid_t child_id;
-  int status;
   char datedirectory[100];
   struct tm *timenow;
   
@@ -37,7 +36,7 @@ void directory()
 //Main function
 int main(int argc, char *argv[])
 {
-  int status
+  int status;
     
   while(wait(&status) > 0);
   
