@@ -1,63 +1,102 @@
-#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <errno.h>
 #include <unistd.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
+#include <syslog.h>
+#include <string.h>
+#include <time.h>
+#include <wait.h>
 
-int main () {
-	pid_t child = fork ();
-	int status;  
-	if (child < 0) {
-		exit(EXIT_FAILURE);
- 	}
-    
-	if (child == 0) {
-	        pid_t child = fork();
-        
-        if (child < 0) {
-		exit(EXIT_FAILURE);
-	} 
-    }
-    
-	if (child == 0) { 
-    		char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Pyoto", NULL};
-        	execv("/bin/mkdir", argv); }
-        
-	else if (child <= 10) {
-        	while ((wait(&status)) <= 10);
-        	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Musyik", NULL};
-        	execv ("/bin/mkdir", argv); }
-        	
-	else if (child >= 10) { 
-		while ((wait(&status)) >= 10);
-        	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Fylm", NULL};
-        	execv ("/bin/mkdir", argv);
-        }
+char cwd[] = "/home/salma/Modul2";
+char *folder[] = {"Pyoto", "Musyik", "Fylm"};
+void makeDirectory();
+void downloadUnzip();
+
+int main() {
+
+	pid_t pid, sid;
 	
-	if ((chdir("/home/salma/Modul2") <0)) {
- 		exit (EXIT_FAILURE); }
+	pid = fork();
+	
+	if (pid > 0) {
+ 		exit (EXIT_FAILURE); 
+ 	}
+	
+	if (pid < 0) {
+ 		exit (EXIT_FAILURE); 
+ 	}
  	
-	if (fork () == 0) { 
-		char web [100];
-		sprintf (web, "https://drive.google.com/file/d/1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD/view?usp=sharing"); 
-		char name[100];
-		char *argv[]={"wget", web, "-qO", name, NULL};
- 		execv ("/bin/wget", argv); }
+ 	umask(0);
  	
-	if (fork () == 0) {
-        	char web [100];
-		sprintf (web, "https://drive.google.com/file/d/1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J/view?usp=sharing");
-		char name[100];
-		char *argv[]={"wget", web, "-qO", name, NULL};
- 		execv ("/bin/wget", argv); }
+	sid = setsid();
+	if(sid < 0) {
+		exit (EXIT_FAILURE);
+	}
+	
+	if ((chdir(cwd)) < 0) {
+ 		exit (EXIT_FAILURE); 
+ 	}
+
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
+	
+	while(1) {
+		makeDirectory();
+		downloadUnzip();
+		sleep(30);
+	}
+}
+
+void makeDirectory() {  
+	pid_t pid, sid;
+	int status;
+	pid = fork();
+	
+	if ((chdir(cwd)) < 0) {
+ 		exit (EXIT_FAILURE); 
+ 	}
+ 		
+	if (pid == 0) { 
+    		char *argv[] = {"mkdir", folder[0], folder[1], folder[2], NULL};
+        	execv ("/bin/mkdir", argv);
+	}
+	
+	else {
+		while((wait(&status)) > 0);
+		return;
+	}
+}
+
+void downloadUnzip() {
+	pid_t pid, sid;
+	int status;
+	pid = fork();
+	
+	if ((chdir(cwd)) < 0) {
+ 		exit (EXIT_FAILURE); 
+ 	}
  	
-	if (fork () == 0) { 
-		char web [100];
-		sprintf (web, "https://drive.google.com/file/d/1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp/view?usp=sharing");
-		char name[100];
-		char *argv[]={"wget", web, "-qO", name, NULL};
- 		execv ("/bin/wget", argv); 
- 	}   
-    }
+	if (pid == 0) { 
+		char *argv[] = {"wget", "-q", "https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download", "-O", "Foto_for_Stevany.zip", NULL};
+        	execv ("/usr/bin/wget", argv);
+	}
+	
+	else { 
+		while ((wait(&status)) > 0);
+		if (fork() == 0) {
+			char *argv[] = {"wget", "-q", "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download", "-O", "Musik_for_Stevany.zip", NULL};
+        		execv ("/usr/bin/wget", argv);	
+	}
+	
+	else { 
+		while ((wait(&status)) > 0);
+		if (fork() == 0) {
+			char *argv[] = {"wget", "-q", "https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download", "-O", "Film_for_Stevany.zip", NULL};
+        		execv ("/usr/bin/wget", argv);
+			}			
+		}
+	}
+}
