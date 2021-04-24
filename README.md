@@ -156,8 +156,12 @@ In problem 3A, we are needed to make a directory with a name according to the ti
 ```
 int main(int argc, char *argv[])
 {
-  int status, status2;
+  int status, status2, status3, status4;
   
+  thisisdaemon();
+
+  killerbash();
+
   while(1)
   {
     char datedirectory[100];
@@ -166,7 +170,13 @@ int main(int argc, char *argv[])
     
     download(datedirectory);
     while(wait(&status2) > 0);
-     
+
+    zip(datedirectory);
+    while(wait(&status3) > 0);
+
+    delete(datedirectory);
+    while(wait(&status4) > 0);
+
     //Wait 40 seconds to make another directory
     sleep(40);
   }
@@ -181,6 +191,7 @@ void download(char datedirectory[])
   char link[100];
   struct tm *timenow;
   char datephoto[100];
+  int status;
   
   child_id = fork();
 
@@ -214,12 +225,22 @@ void download(char datedirectory[])
 
       if(child_id_datephoto == 0)
       {
-        char *argv[] = {"wget", link, "-O", datephoto, "-o", "/dev/null" NULL};
+        char *argv[] = {"wget", link, "-O", datephoto, "-o", "/dev/null", NULL};
         execv("/bin/wget", argv);
       }
       //Wait 5 seconds to download another photo
       sleep(5);
     }
+    while(wait(&status) > 0);
+
+    //3C - Make a txt file 
+    char message[100] = {"Download Success"};
+    cipher(message, 5);
+
+    FILE* text = fopen("status.txt", "w");
+    fprintf(text, "%s", message);
+    fclose(text);
+   
     //Download photos to the next directory
     chdir("..")
   }
