@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 
 **b. Download 10 photos for each directory**
 ```
-void download(datedirectory)
+void download(char datedirectory[])
 {
   pid_t child_id;
   char link[100];
@@ -192,7 +192,7 @@ void download(datedirectory)
   if(child_id == 0)
   {
     //Download photos to the directory that we want --> (downloaddirectory)
-    chdir(downloaddirectory);
+    chdir(datedirectory);
     for(int i = 0; i < 10; i++)
     {
       //Make format name for the photos
@@ -225,4 +225,4 @@ void download(datedirectory)
   }
 }
 ```
-In problem 3B, we are needed to download 10 photos for each directory, and each photo will be downloaded for every 5 seconds, the first thing I do is to choose the directory to be the place of the photo that will be downloaded, therefore I use `chdir(downloaddirectory)` command, after that I will make format name for the photo using `struct tm *` command to get the localtime from my laptop then I use `strftime` command to break down the time so it will go like the format that the question want. Now, I want to make format to download the photos including the size of the photos using `sprintf` command. And now, in the child process in `char *argv[]` function, I write `{"wget", link, "-O", datephoto, "-o", "/dev/null" NULL}` to get the picture, I use `wget` so I can get the photo from the link, then I use `-O` so the output  will be seen in the `datephoto` directory or document, after that I use `-o` to log all the message or in this case the photos to the logfile, lastly I will use `"/dev/null"` so it will give the permission. After that, I will use `sleep` command, so eaxh photo will be downloaded for every 5 seconds. And the last thing that I will do is to use `chdir("..")` command, so the downloaded photo will be downloaded to the next directory or the new one.
+In problem 3B, we are needed to download 10 photos for each directory, and each photo will be downloaded for every 5 seconds, the first thing I do is to choose the directory to be the place of the photo that will be downloaded, therefore I use `chdir(datedirectory)` command, after that I will make format name for the photo using `struct tm *` command to get the localtime from my laptop then I use `strftime` command to break down the time so it will go like the format that the question want. Now, I want to make format to download the photos including the size of the photos using `sprintf` command. And now, in the child process in `char *argv[]` function, I write `{"wget", link, "-O", datephoto, "-o", "/dev/null" NULL}` to get the picture, I use `wget` so I can get the photo from the link, then I use `-O` so the output  will be seen in the `datephoto` directory or document, after that I use `-o` to log all the message or in this case the photos to the logfile, lastly I will use `"/dev/null"` so it will give the permission. After that, I will use `sleep` command, so eaxh photo will be downloaded for every 5 seconds. And the last thing that I will do is to use `chdir("..")` command, so the downloaded photo will be downloaded to the next directory or the new one.
