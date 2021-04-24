@@ -206,7 +206,7 @@ void delete(char datedirectory[])
 }
 
 //3D - Killer program
-void killer()
+void killerbash()
 {
   FILE* killer;
   killer = fopen("killer.sh", "w");
