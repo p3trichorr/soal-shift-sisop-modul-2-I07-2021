@@ -302,3 +302,15 @@ void delete(char datedirectory[])
 }
 ```
 Lastly, to solve problem 3C, I must delete the folder that has been zipped, and in this function I will write `{"rm", "-r", datedirectory, NULL}` in the child process to delete the folder that has been zipped.
+
+**d. Make a killer program**
+```
+void killer()
+{
+  FILE* killer;
+  killer = fopen("killer.sh", "w");
+  fprintf(killer, "!#/bin/bash\npkill -f soal3\n echo \'Process have been killed!\'");
+  fclose(killer);
+}
+```
+In problem 3D, we are needed to make a killer program and it must be a bash program, so the first thing that I do is use `FILE*` command to make the killer file or program, then I use `fopen` command to open the killer program and to be able to write in the program. After that I will use `fprint` command so I can print in the killer program, when I print the killer program I use `pkill -f soal3` command to kill all process in the soal3 program, lastly I will use `fclose` command to close the killer file or program.
