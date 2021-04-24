@@ -111,7 +111,7 @@ The code above is the first child process in which it will make a folder using t
     	exit(EXIT_FAILURE);
     }
     if (child2_id == 0){
-    	char *argv[] = {"unzip", "pets", "-d", "/home/zulu/modul2/petshop", NULL};
+    	char *argv[] = {"unzip", "pets", "*.jpg", -d", "/home/zulu/modul2/petshop", NULL};
     	execv("/bin/unzip", argv);
 ```
 The code was then continued with the `unzip` command specifying `pets` to unzip the file and put them into the `/home/zulu/modul2/petshop` directory.
