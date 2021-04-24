@@ -49,7 +49,7 @@ void download(char datedirectory[])
   
   if(child_id == 0)
   {
-    //Download photos to the directory that we want --> (downloaddirectory)
+    //Download photos to the directory that we want --> (datedirectory)
     chdir(datedirectory);
     for(int i = 0; i < 10; i++)
     {
