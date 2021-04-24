@@ -226,3 +226,58 @@ void download(char datedirectory[])
 }
 ```
 In problem 3B, we are needed to download 10 photos for each directory, and each photo will be downloaded for every 5 seconds, the first thing I do is to choose the directory to be the place of the photo that will be downloaded, therefore I use `chdir(datedirectory)` command, after that I will make format name for the photo using `struct tm *` command to get the localtime from my laptop then I use `strftime` command to break down the time so it will go like the format that the question want. Now, I want to make format to download the photos including the size of the photos using `sprintf` command. And now, in the child process in `char *argv[]` function, I write `{"wget", link, "-O", datephoto, "-o", "/dev/null" NULL}` to get the picture, I use `wget` so I can get the photo from the link, then I use `-O` so the output  will be seen in the `datephoto` directory or document, after that I use `-o` to log all the message or in this case the photos to the logfile, lastly I will use `"/dev/null"` so it will give the permission. After that, I will use `sleep` command, so eaxh photo will be downloaded for every 5 seconds. And the last thing that I will do is to use `chdir("..")` command, so the downloaded photo will be downloaded to the next directory or the new one.
+
+**c. Zip the folder and make txt file in the zip also delete the folder that has been zipped**
+```
+char message[100] = {"Download Success"};
+cipher(message, 5);
+
+FILE* text = fopen("status.txt", "w");
+fprintf(text, "%s", message);
+fclose(text);
+```
+In problem 3C, we are needed to zip the previous folder from problem 3A, then make a txt file in there, after that we must delete the folder that has been zipped. So now, the first thing that I do is make the txt file first like the code above, I use `FILE*` command to make the file, than use the `fopen` also `"w"` command to open the txt file and to able to write in the txt file, then I use `fprint` command to print in the txt file, lastly I will use `fclose` command to close the txt file.
+```
+void zip(char datedirectory[])
+{
+  char zipfile[100];
+  strcpy(zipfile, datedirectory);
+  strcat(zipfile, ".zip");
+
+  pid_t child_id;
+
+  child_id = fork();
+
+  if(child_id_datephoto < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if(child_id_datephoto == 0)
+  {
+    char *argv[] = {"zip", "-r", zipfile, datedirectory, NULL};
+    execv("/bin/zip", argv);
+  }
+}
+```
+Now, the next thing that I will do is to zip the folder, firstly I will use `strcpy` file to copy the string from the `datedirectory` to `zipfile` and then I use `strcat` to decide the type of the file. After that, in the child process I will use `{"zip", "-r", zipfile, datedirectory, NULL}` to zip the file that I named `datedirectory`.
+```
+void delete(char datedirectory[])
+{
+  pid_t child_id;
+
+  child_id = fork();
+
+  if(child_id < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if(child_id == 0)
+  {
+    char *argv[] = {"rm", "-r", datedirectory, NULL};
+    execv("/bin/rm", argv);
+  }
+}
+```
+Lastly, to solve problem 3C, I must delete the folder that has been zipped, and in this function I will write `{"rm", "-r", datedirectory, NULL}` in the child process to delete the folder that has been zipped.
