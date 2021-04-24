@@ -5,6 +5,75 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <syslog.h>
+#include <signal.h>
+
+//Daemon
+void thisisdaemon()
+{
+  pid_t pid, sid;
+  pid = fork();
+
+  if(pid < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if(pid > 0)
+  {
+    exit(EXIT_SUCCESS);
+  }
+ 
+  umask(0);
+
+  sid = setsid();
+
+  if(sid < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+   
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+}
+
+//Caesar cipher algorithm
+void cipher(char message[], int key)
+{
+  char ch; 
+  int i;
+
+  for(i = 0; message[i] != '\0'; i++)
+  {
+    ch = message[i];
+
+    if(ch >= 'a' && ch <= 'z')
+    {
+      ch = ch + key;
+            
+      if(ch > 'z')
+      {
+        ch = ch - 'z' + 'a' - 1;
+      }
+      message[i] = ch;
+    }
+
+    else if(ch >= 'A' && ch <= 'Z')
+    {
+      ch = ch + key;
+        
+      if(ch > 'Z')
+      {
+        ch = ch - 'Z' + 'A' - 1;
+      }
+      message[i] = ch;
+    }
+  }
+}
 
 //3A - Make directory according to the format name
 void directory(char datedirectory[])
@@ -27,18 +96,19 @@ void directory(char datedirectory[])
 
   if(child_id == 0) 
   {
-    char *argv[] = {"mkdir", date, NULL};
+    char *argv[] = {"mkdir", datedirectory, NULL};
     execv("/bin/mkdir", argv);
   }
 }
 
-//3B - Download 10 photos for each directory
+//3B - Download 10 photos to each directory
 void download(char datedirectory[])
 {
   pid_t child_id;
   char link[100];
   struct tm *timenow;
   char datephoto[100];
+  int status;
   
   child_id = fork();
 
@@ -49,7 +119,7 @@ void download(char datedirectory[])
   
   if(child_id == 0)
   {
-    //Download photos to the directory that we want --> (datedirectory)
+    //Download photos to the directory that we want --> (date directory)
     chdir(datedirectory);
     for(int i = 0; i < 10; i++)
     {
@@ -72,22 +142,87 @@ void download(char datedirectory[])
 
       if(child_id_datephoto == 0)
       {
-        char *argv[] = {"wget", link, "-O", datephoto, "-o", "/dev/null" NULL};
+        char *argv[] = {"wget", link, "-O", datephoto, "-o", "/dev/null", NULL};
         execv("/bin/wget", argv);
       }
       //Wait 5 seconds to download another photo
       sleep(5);
     }
+    while(wait(&status) > 0);
+
+    //3C - Make a txt file 
+    char message[100] = {"Download Success"};
+    cipher(message, 5);
+
+    FILE* text = fopen("status.txt", "w");
+    fprintf(text, "%s", message);
+    fclose(text);
+   
     //Download photos to the next directory
     chdir("..")
   }
 }
 
+//3C - Zip the txt folder with the txt file in it
+void zip(char datedirectory[])
+{
+  char zipfile[100];
+  strcpy(zipfile, datedirectory);
+  strcat(zipfile, ".zip");
+
+  pid_t child_id;
+
+  child_id = fork();
+
+  if(child_id_datephoto < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if(child_id_datephoto == 0)
+  {
+    char *argv[] = {"zip", "-r", zipfile, datedirectory, NULL};
+    execv("/bin/zip", argv);
+  }
+}
+
+//3C - Delete forder that has been zipped
+void delete(char datedirectory[])
+{
+  pid_t child_id;
+
+  child_id = fork();
+
+  if(child_id < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if(child_id == 0)
+  {
+    char *argv[] = {"rm", "-r", datedirectory, NULL};
+    execv("/bin/rm", argv);
+  }
+}
+
+//3D - Killer program
+void killer()
+{
+  FILE* killer;
+  killer = fopen("killer.sh", "w");
+  fprintf(killer, "!#/bin/bash\npkill -f soal3\n echo \'Process have been killed!\'");
+  fclose(killer);
+}
+
 //Main function
 int main(int argc, char *argv[])
 {
-  int status, status2;
+  int status, status2, status3, status4;
   
+  thisisdaemon();
+
+  killerbash();
+
   while(1)
   {
     char datedirectory[100];
@@ -96,7 +231,13 @@ int main(int argc, char *argv[])
     
     download(datedirectory);
     while(wait(&status2) > 0);
-     
+
+    zip(datedirectory);
+    while(wait(&status3) > 0);
+
+    delete(datedirectory);
+    while(wait(&status4) > 0);
+
     //Wait 40 seconds to make another directory
     sleep(40);
   }
