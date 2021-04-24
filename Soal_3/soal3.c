@@ -33,7 +33,7 @@ void directory(char datedirectory[])
 }
 
 //3B - Download 10 photos for each directory
-void download(datedirectory)
+void download(char datedirectory[])
 {
   pid_t child_id;
   char link[100];
@@ -50,7 +50,7 @@ void download(datedirectory)
   if(child_id == 0)
   {
     //Download photos to the directory that we want --> (downloaddirectory)
-    chdir(downloaddirectory);
+    chdir(datedirectory);
     for(int i = 0; i < 10; i++)
     {
       //Make format name for the photos
