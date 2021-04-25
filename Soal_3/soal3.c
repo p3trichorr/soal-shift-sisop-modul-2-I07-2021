@@ -189,7 +189,7 @@ void killerbash(int argc, char *argv[])
 
   if (child_id == 0)
   {
-    //3E- Killer program with 2 mode
+    //3E - Killer program with 2 mode
     FILE *killer = fopen("killer.sh", "w");
     if (strcmp(argV[1], "-z") == 0)
     {
