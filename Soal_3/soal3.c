@@ -176,7 +176,7 @@ void delete(char datedirectory[])
 }
 
 //3D - Killer program
-void killerbash(int argc, char *argv[])
+void killerbash(int argc, char *argv[], int pid)
 {
   pid_t child_id;
   child_id = fork();
@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
 
-  killerbash();
+  killerbash(argc, argv, (int) getpid()+1);
 
   while(1)
   {
