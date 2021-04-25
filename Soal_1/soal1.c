@@ -12,7 +12,7 @@
 
 char cwd[]= "/home/salma/Modul2/";
 char *fileStevany[] = {"Pyoto", "Musyik", "Fylm"};
-char *link[]={"https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download",
+char *web[]={"https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download",
              "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download",
              "https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download"};
 char *fileZip[] = {"Foto_for_Stevany.zip", "Musik_for_Stevany.zip", "Film_for_Stevany.zip"};
@@ -52,7 +52,7 @@ void downloadAndUnzip () {
   	if(pid==0) {
   
       		if (fork() == 0) {              // child process -- download FOTO
-        		char *argv[] = {"wget", "--no-check-certificate", link[0], "-O", fileZip[0], NULL};
+        		char *argv[] = {"wget", "--no-check-certificate", web[0], "-O", fileZip[0], NULL};
         		execv("/usr/bin/wget", argv);
       } 
   
@@ -60,7 +60,7 @@ void downloadAndUnzip () {
       		while((wait(&status)) > 0);
   
         	if (fork() == 0) {         // child process -- download MUSIK
-            		char *argv[] = {"wget", "--no-check-certificate", link[1], "-O", fileZip[1], NULL};
+            		char *argv[] = {"wget", "--no-check-certificate", web[1], "-O", fileZip[1], NULL};
             	execv("/usr/bin/wget", argv);
         } 
   
@@ -68,7 +68,7 @@ void downloadAndUnzip () {
         	while((wait(&status)) > 0);
   
             	if (fork() == 0) {       // child process -- download FILM
-              		char *argv[] = {"wget", "--no-check-certificate", link[2], "-O", fileZip[2], NULL};
+              		char *argv[] = {"wget", "--no-check-certificate", web[2], "-O", fileZip[2], NULL};
               		execv("/usr/bin/wget", argv);
             } 
   
