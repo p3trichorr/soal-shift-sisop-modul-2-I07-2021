@@ -16,66 +16,173 @@ Zulfiqar Rahman Aji (05111942000019)
 **a. Show The Folder Named Musyik, Fylm, Pyoto**
 
 ```
-	if (child == 0) {
-	        pid_t child = fork();
-        
-        if (child < 0) {
-		exit(EXIT_FAILURE);
-	} 
+	void makeDirectory() {
+	pid_t pid;
+ 	int status;
+    	pid = fork();
+
+    	if ((chdir(cwd)) < 0) {
+      		exit(EXIT_FAILURE);
     }
-    
-	if (child == 0) { 
-    		char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Pyoto", NULL};
-        	execv("/bin/mkdir", argv); }
-        
-	else if (child <= 10) {
-        	while ((wait(&status)) <= 10);
-        	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Musyik", NULL};
-        	execv ("/bin/mkdir", argv); }
-        	
-	else if (child >= 10) { 
-		while ((wait(&status)) >= 10);
-        	char *argv[] = {"mkdir", "-p", "/home/salma/Modul 2/Fylm", NULL};
-        	execv ("/bin/mkdir", argv);
+
+    	if (pid == 0){
+      		char *argv[] = {"mkdir", fileStevany[0], fileStevany[1], fileStevany[2], NULL};
+      		execv("/bin/mkdir", argv);
+    }
+     
+  	else {
+      		while((wait(&status)) > 0);
+    		return;          
+    }
+}
 ```
 
-First make a program run fail if the program condition running this ``if (child < 0) { exit(EXIT_FAILURE)``
+First make a program run fail if the program condition running this ``if ((chdir(cwd)) < 0) { exit(EXIT_FAILURE); }`` when the ``char cwd[]= "/home/salma/Modul2/";``
 
-We need to make 3 if else condition, ``if (child == 0)`` for folder Pyoto, ``else if (child <= 10)`` for folder Musyik, and ``else if (child >= 10)`` for folder Fylm.
-
-To make the folder coming out we need to do system call ``wait`` and ``fork`` ``exec``
+We need to make 3 folder named Pyoto, Musyik, Fylm ``char *argv[] = {"mkdir", fileStevany[0], fileStevany[1], fileStevany[2], NULL}; execv("/bin/mkdir", argv);`` and named the file in this char ``char *fileStevany[] = {"Pyoto", "Musyik", "Fylm"};``
 
 <img width="350" alt="soal1a" src="https://user-images.githubusercontent.com/73702347/115103100-676d2f00-9f79-11eb-823d-defc8f7458ed.png">
 
 **b. Download Files for Each Folder**
 
 ```
-if ((chdir("/home/salma/Modul2") <0)) {
- 		exit (EXIT_FAILURE); }
- 	
-	if (fork () == 0) { 
-		char web [100];
-		sprintf (web, "https://drive.google.com/file/d/1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD/view?usp=sharing"); 
-		char name[100];
-		char *argv[]={"wget", web, "-qO", name, NULL};
- 		execv ("/bin/wget", argv); }
- 	
-	if (fork () == 0) {
-        	char web [100];
-		sprintf (web, "https://drive.google.com/file/d/1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J/view?usp=sharing");
-		char name[100];
-		char *argv[]={"wget", web, "-qO", name, NULL};
- 		execv ("/bin/wget", argv); }
- 	
-	if (fork () == 0) { 
-		char web [100];
-		sprintf (web, "https://drive.google.com/file/d/1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp/view?usp=sharing");
-		char name[100];
-		char *argv[]={"wget", web, "-qO", name, NULL};
- 		execv ("/bin/wget", argv); 
- 	}   
+void downloadAndUnzip () {
+	pid_t pid;
+  	int status;
+    	pid = fork();
+  
+  	if ((chdir(cwd)) < 0) {
+      		exit(EXIT_FAILURE);
+  }
+  
+  	if(pid==0) {
+  
+      		if (fork() == 0) {              // child process -- download FOTO
+        		char *argv[] = {"wget", "--no-check-certificate", link[0], "-O", fileZip[0], NULL};
+        		execv("/usr/bin/wget", argv);
+      } 
+  
+      else {
+      		while((wait(&status)) > 0);
+  
+        	if (fork() == 0) {         // child process -- download MUSIK
+            		char *argv[] = {"wget", "--no-check-certificate", link[1], "-O", fileZip[1], NULL};
+            	execv("/usr/bin/wget", argv);
+        } 
+  
+        else {
+        	while((wait(&status)) > 0);
+  
+            	if (fork() == 0) {       // child process -- download FILM
+              		char *argv[] = {"wget", "--no-check-certificate", link[2], "-O", fileZip[2], NULL};
+              		execv("/usr/bin/wget", argv);
+            } 
 ```
 We need to download each folder from gdrive that given 
+
+**c. Unzip all the downloaded files**
+
+```
+else {                   // parent process -- unzip all files
+       	while((wait(&status)) > 0);
+       	char *argv[] = {"unzip", "-q", "*.zip", NULL};
+       	execv("/usr/bin/unzip", argv);
+            }
+```
+
+**d. Moving the unzip folder in the folder that we made in the 1a**
+
+```
+void moveFiles() {
+	pid_t pid;
+    	int status;
+    	pid = fork();
+    
+  	if ((chdir(cwd)) < 0) {
+      		exit(EXIT_FAILURE);
+  }
+
+  	if(pid==0){
+      		if(fork() == 0){
+        	char *find[] = {"find","/home/salma/Modul2/FOTO" , "-type", "f", "-exec", "mv", "{}", 
+                        "/home/salma/Modul2/Pyoto", ";", NULL};
+        	execv("/usr/bin/find", find);
+      }
+  
+      else {
+      		while((wait(&status)) > 0);
+      		if (fork() == 0) {
+            		char *find[] = {"find", "/home/salma/Modul2/MUSIK", "-type", "f", "-exec", "mv", "{}", 
+                            "/home/salma/Modul2/Musyik", ";", NULL};
+            		execv("/usr/bin/find", find);
+        }
+  
+      else {
+      		while((wait(&status)) > 0);
+       	char *find[] = {"find", "/home/salma/Modul2/FILM", "-type", "f", "-exec", "mv", "{}", 
+                            "/home/salma/Modul2/Fylm", ";", NULL};
+            	execv("/usr/bin/find", find);
+        }
+      }
+  }
+  
+else {
+	while((wait(&status)) > 0);
+	return;
+  }
+```
+
+**e. Zip all the file named Lopyu_Stevany.zip and delete all the rest folder**
+
+```
+void zipFiles() {
+	pid_t pid;
+  	int status;
+ 	pid = fork();
+
+	if(pid == 0) {
+    		char *argv[] = {"zip", "-q", "-r", "-m", "Lopyu_Stevany.zip", fileStevany[0], fileStevany[1], fileStevany[2], NULL};
+    		execv("/usr/bin/zip", argv);
+  }
+
+	else {
+    		while(wait(&status) > 0);
+    		return;
+  }
+  
+  void removeFolder() {
+	pid_t pid;
+  	int status;
+  	pid = fork();
+
+  	if(pid == 0) {
+    		char *argv[] = {"rm", "-d", fileUnzip[0], fileUnzip[1], fileUnzip[2], NULL};
+    		execv("/usr/bin/rm", argv);
+  }
+
+  	else {
+    		while(wait(&status) > 0);
+    		return;
+  }
+```
+
+**f. Run all the program in 6 hours before her birthday**
+
+```
+if (local->tm_mon+1==4 && local->tm_mday == 9 && local->tm_hour == 16 && local->tm_min == 22 && local->tm_sec == 0) {
+    		makeDirectory();
+    		downloadAndUnzip();
+    		moveFiles();
+  }
+
+  	else if (local->tm_mon+1==4 && local->tm_mday == 9 && local->tm_hour == 22 && local->tm_min == 22 && local->tm_sec == 0) {
+    		zipFiles();
+    		removeFolder();
+  }
+    
+    sleep(1);
+  }
+```
 
 ## PROBLEM 2
 **a. Make a folder, Extract the zip folder and Delete folders else then the jpeg's**
