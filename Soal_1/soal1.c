@@ -87,7 +87,7 @@ void downloadAndUnzip () {
   }
 }
 
-//Nomor1f
+//Nomor1d
 void moveFiles() {
 	pid_t pid;
     	int status;
@@ -128,6 +128,7 @@ else {
 
 }
 
+//Nomor1e
 void zipFiles() {
 	pid_t pid;
   	int status;
@@ -192,7 +193,7 @@ int main() {
 		time_t now = time(NULL);
 		struct tm *local = localtime(&now);
   
-//Nomor1e
+//Nomor1f
 	if (local->tm_mon+1==4 && local->tm_mday == 9 && local->tm_hour == 16 && local->tm_min == 22 && local->tm_sec == 0) {
     		makeDirectory();
     		downloadAndUnzip();
