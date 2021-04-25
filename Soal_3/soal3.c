@@ -178,38 +178,39 @@ void delete(char datedirectory[])
 //3D - Killer program
 void killerbash(int argc, char *argv[])
 {
-	pid_t child_id;
-	child_id = fork();
-	int status;
+  pid_t child_id;
+  child_id = fork();
+  int status;
 
-	if(child_id < 0)
+  if(child_id < 0)
   {
-	  exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
   }
 
-	if (child_id == 0)
-	{
-		//3E- Killer program with 2 mode
-		FILE *killer = fopen("killer.sh", "w");
-		if (strcmp(argV[1], "-z") == 0)
-		{
-			//Kill program immedietly
-			fprintf(killer, "#!/bin/bash\nkillall -9 soal3\nrm \"$0\"");
-		}
-		else if (strcmp(argV[1], "-x") == 0)
-		{
-			//Kill program after done doing 3A-3C
-			fprintf(killer, "#!/bin/bash\nkill %d\nrm \"$0\"", pid);
-		}
-		fclose(killer);
-	}
+  if (child_id == 0)
+  {
+    //3E- Killer program with 2 mode
+    FILE *killer = fopen("killer.sh", "w");
+    if (strcmp(argV[1], "-z") == 0)
+    {
+      //Kill program immedietly
+      fprintf(killer, "#!/bin/bash\nkillall -9 soal3\nrm \"$0\"");
+    }
+	  
+    else if (strcmp(argV[1], "-x") == 0)
+    {
+      //Kill program after done doing 3A-3C
+      fprintf(killer, "#!/bin/bash\nkill %d\nrm \"$0\"", pid);
+    }
+    fclose(killer);
+  }
 
-	else if(child_id > 0 && wait(&status) > 0)
-	{
-		//To make the bash program executable
-		char *argv[] = {"chmod", "+x", "killer.sh", NULL};
+  else if(child_id > 0 && wait(&status) > 0)
+  {
+    //To make the bash program executable
+    char *argv[] = {"chmod", "+x", "killer.sh", NULL};
     execv("/bin/chmod", argv);
-	}
+  }
 }
 
 //Main function
