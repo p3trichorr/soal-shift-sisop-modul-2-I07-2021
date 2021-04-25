@@ -213,6 +213,167 @@ pid_t cid;
 The above code is used to unzip the `pets.zip` file using the `unzip` command and specifying only for the jpg files using the `*.jpg` with a destination directory `/home/zulu/modul2/petshop`. and executing it with `execv("/bin/unzip", command);`
 
 **b. Make a folder according to the animal type**
+```
+while((entry1 = readdir(pdr1)) != NULL) {
+        if(entry1->d_type == DT_REG) {
+            char tmp[300], tmp2[300];
+            memset(folder[n], 0, sizeof(folder[n]));
+            memset(tmp2, 0, sizeof(tmp2));
+            strcpy(tmp, entry1->d_name);
+```
+We first declare a folder and temp char for the names of each files and set the array into a set of zeroes so the value won't be null. 
+```
+int i, found = 0;
+for(i = 0; i < strlen(tmp); i++) {
+	if(tmp[i] == ';') break;
+		tmp2[i] = tmp[i];
+}
+            
+for(i = 0; i < n && found == 0; i++)
+	if(strcmp(folder[i], tmp2) == 0)
+	found = 1;
+            
+if(found == 0) {
+	strcpy(folder[n], tmp2);
+	n++;
+}
+```
+The code above is to take the characters from the photo name into the folder array and stop when they found a semicolon. The code will also check if there are simillar names and will continue the loop if the name is not simillar.
+```
+int i;
+    for(i = 0; i < n; i++) {
+        pid_t cid;
+        cid = fork();
+        if(cid < 0) exit(0);
+        if(cid == 0) {
+            char tmp[300];
+            sprintf(tmp, "/home/zulu/modul2/petshop/%s", folder[i]);
+            char *command[] = {"mkdir", tmp, NULL};
+            execv("/bin/mkdir", command);
+        }
+    }
+```
+Finally, a loop is then made to make a folder using all the names from the folder array.
+
+**c&d. Move the photos to the respective folder and rename them. As 1 photo may have 2 animal type, put each animal into each respective folder**
+```
+for(i = 0; i < strlen(tmp); i++) {
+	if(tmp[i] == ';') break;
+		type1[i] = tmp[i];
+}
+```
+The first loop is to take the type of the pet into the type array
+```
+for(; i < strlen(tmp); i++) {
+	if(tmp[i] == ';') break;
+		name1[i-l] = tmp[i];
+}
+```
+The second loop is to take the name of the pet and put them into the name array
+```
+for(; i < strlen(tmp); i++) {
+	if(tmp[i] == '_' || (tmp[i] == '.' && tmp[i+1] == 'j')) break;
+		age1[i-l] = tmp[i];
+}
+```
+The last loop is to take the age of the pet and put them into the age array.
+```
+if(tmp[i] == '_') {
+	i++; l = i;
+	for(; i < strlen(tmp); i++) {
+		if(tmp[i] == ';') break;
+                type2[i-l] = tmp[i];
+        }
+                
+      	i++; l = i;
+        for(; i < strlen(tmp); i++) {
+                if(tmp[i] == ';') break;
+                name2[i-l] = tmp[i];
+        }
+                
+        i++; l = i;
+        for(; i < strlen(tmp); i++) {
+                if(tmp[i] == '.' && tmp[i+1] == 'j') break;
+                age2[i-l] = tmp[i];
+        }      
+        counter = 1;
+}
+```
+The next code is simillar to the code before but it will only run if the code before meet an underscore at the end of the age number which signals that there are two animal in the photo with each respective names and make the counter into 1.
+```
+int state_1, state_2;
+	pid_t cid;
+        cid = fork();
+        if(cid < 0) exit(0);
+        if(cid == 0) {
+		char from[300], to[300];
+                sprintf(from, "/home/zulu/modul2/petshop/%s", entry2->d_name);
+                sprintf(to, "/home/zulu/modul2/petshop/%s/%s", type1, name1);
+                char *command[] = {"cp", "-r", from, to, NULL};
+                execv("/bin/cp", command);
+}
+```
+Next the code will copy the images from the initial petshop directory and paste them to the newly made folders with their respective animal type and renaming it in the process
+```
+if(counter == 1) {
+	pid_t cid;
+        cid = fork();
+        if(cid < 0) exit(0);
+        if(cid == 0) {
+        	char from[300], to[300];
+                sprintf(from, "/home/zulu/modul2/petshop/%s", entry2->d_name);
+                sprintf(to, "/home/zulu/modul2/petshop/%s/%s", type2, name2);
+                char *command[] = {"cp", "-r", from, to, NULL};
+                execv("/bin/cp", command);
+        }
+}
+```
+This code is simillar to the code above but it will only run and copy the images inside if the counter has a value and the images will be copied and pasted into their respective folder.
+```
+while(wait(&state_3) > 0);
+    DIR *pdr3;
+    struct dirent *entry3;
+    pdr3 = opendir("/home/zulu/modul2/petshop");
+    while((entry3 = readdir(pdr3)) != NULL) {
+        if((entry3->d_type == DT_REG) && strcmp(entry3->d_name, ".") != 0 && strcmp(entry3->d_name, "..") != 0){
+            pid_t cid;
+            cid = fork();
+            if(cid < 0) exit(0);
+            if(cid == 0) {
+                char folder[300];
+                sprintf(folder, "/home/zulu/modul2/petshop/%s", entry3->d_name);
+                char *command[] = {"rm", "-r", folder, NULL};
+                execv("/bin/rm", command);
+            }
+        }
+    }
+```
+Finally all the images from in the petshop folder is deleted as all the images has been copied to their respective folder.
+
+**e. Make a .txt file to record all the animal names and age in their folder**
+This process is done together with the moving of the image from the previous problem
+```
+while(wait(&state_1) > 0);
+char ket[300];
+sprintf(ket, "/home/zulu/modul2/petshop/%s/keterangan.txt", type1);
+FILE *filep;
+filep = fopen(ket, "a+");
+fprintf(filep, "nama : %s\n", name1);
+fprintf(filep, "umur : %s tahun\n\n", age1);
+fclose(filep);
+```
+The code will run for every images move making a .txt file for each fodler and printing out the name and age in the .txt file
+```
+while(wait(&state_2) > 0);
+char ket[300];
+sprintf(ket, "/home/zulu/modul2/petshop/%s/keterangan.txt", type2);
+FILE *filep;
+filep = fopen(ket, "a+");
+fprintf(filep, "nama : %s\n", name2);
+fprintf(filep, "umur : %s tahun\n\n", age2);
+fclose(filep);
+```
+The code above is simillar to the code above but only for the second animal.
 
 ## PROBLEM 3
 
