@@ -137,9 +137,7 @@ else {
   }
 ```
 
-After we downloaded the file, then we unzip all file like in the 1c, and unzip with these name (FOTO, MUSIK AND FILM).
-
-Move it with ``mv`` 
+After we downloaded the file, then we unzip all file like in the 1c, and unzip name is (FOTO, MUSIK AND FILM). We just move all those 3 file, in folder that we made in 1a. Move it with ``mv`` 
 
 **e. Zip all the file named Lopyu_Stevany.zip and Remove all the rest of the folder**
 
