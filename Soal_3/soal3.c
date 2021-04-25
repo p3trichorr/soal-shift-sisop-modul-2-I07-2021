@@ -194,7 +194,7 @@ void killerbash(int argc, char *argv[])
     if (strcmp(argV[1], "-z") == 0)
     {
       //Kill program immedietly
-      fprintf(killer, "#!/bin/bash\nkillall -9 soal3\nrm \"$0\"");
+      fprintf(killer, "#!/bin/bash\nkillall -9 soal3\nrm\"$0\"");
     }
 	  
     else if (strcmp(argV[1], "-x") == 0)
