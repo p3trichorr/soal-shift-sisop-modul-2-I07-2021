@@ -58,7 +58,7 @@ void downloadAndUnzip () {
   	if(pid==0) {
   
       		if (fork() == 0) {              // child process -- download FOTO
-        		char *argv[] = {"wget", "--no-check-certificate", link[0], "-O", fileZip[0], NULL};
+        		char *argv[] = {"wget", "--no-check-certificate", web[0], "-O", fileZip[0], NULL};
         		execv("/usr/bin/wget", argv);
       } 
   
@@ -66,7 +66,7 @@ void downloadAndUnzip () {
       		while((wait(&status)) > 0);
   
         	if (fork() == 0) {         // child process -- download MUSIK
-            		char *argv[] = {"wget", "--no-check-certificate", link[1], "-O", fileZip[1], NULL};
+            		char *argv[] = {"wget", "--no-check-certificate", web[1], "-O", fileZip[1], NULL};
             	execv("/usr/bin/wget", argv);
         } 
   
@@ -74,11 +74,14 @@ void downloadAndUnzip () {
         	while((wait(&status)) > 0);
   
             	if (fork() == 0) {       // child process -- download FILM
-              		char *argv[] = {"wget", "--no-check-certificate", link[2], "-O", fileZip[2], NULL};
+              		char *argv[] = {"wget", "--no-check-certificate", web[2], "-O", fileZip[2], NULL};
               		execv("/usr/bin/wget", argv);
             } 
 ```
-We need to download each folder from gdrive that given 
+
+We need to download each folder from gdrive that given, and use child process to download each file. Through this link ``char *web[]={"https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download", "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download", "https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download"};``
+
+After that we rename it in the ``char *fileZip[] = {"Foto_for_Stevany.zip", "Musik_for_Stevany.zip", "Film_for_Stevany.zip"};``
 
 **c. Unzip all the downloaded files**
 
@@ -89,6 +92,8 @@ else {                   // parent process -- unzip all files
        	execv("/usr/bin/unzip", argv);
             }
 ```
+
+Used ``char *argv[] = {"unzip", "-q", "*.zip", NULL};`` to unzip all file
 
 **d. Moving the unzip folder in the folder that we made in the 1a**
 
@@ -132,7 +137,11 @@ else {
   }
 ```
 
-**e. Zip all the file named Lopyu_Stevany.zip and delete all the rest folder**
+After we downloaded the file, then we unzip all file like in the 1c, and unzip with these name (FOTO, MUSIK AND FILM).
+
+Move it with ``mv`` 
+
+**e. Zip all the file named Lopyu_Stevany.zip and Remove all the rest of the folder**
 
 ```
 void zipFiles() {
@@ -166,7 +175,11 @@ void zipFiles() {
   }
 ```
 
-**f. Run all the program in 6 hours before her birthday**
+Zipp all the folder from Pyoto, Musyik, Fylm with this ``char *argv[] = {"zip", "-q", "-r", "-m", "Lopyu_Stevany.zip", fileStevany[0], fileStevany[1], fileStevany[2], NULL};``
+
+Name it with Lopyu_Stevany.zip
+
+**f. Run all the program in 6 hours before her birthday in 9 April 22.00**
 
 ```
 if (local->tm_mon+1==4 && local->tm_mday == 9 && local->tm_hour == 16 && local->tm_min == 22 && local->tm_sec == 0) {
@@ -183,6 +196,8 @@ if (local->tm_mon+1==4 && local->tm_mday == 9 && local->tm_hour == 16 && local->
     sleep(1);
   }
 ```
+
+Because before 22.00 is 16.00 so we have to run it twice ``sudo date --set="2021-04-09 16:21:59"`` and ``sudo date --set="2021-04-09 22:21:59"``
 
 ## PROBLEM 2
 **a. Make a folder, Extract the zip folder and Delete folders else then the jpeg's**
