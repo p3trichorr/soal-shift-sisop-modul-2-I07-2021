@@ -11,36 +11,6 @@
 #include <syslog.h>
 #include <signal.h>
 
-//Daemon
-void thisisdaemon()
-{
-  pid_t pid, sid;
-  pid = fork();
-
-  if(pid < 0)
-  {
-    exit(EXIT_FAILURE);
-  }
-
-  if(pid > 0)
-  {
-    exit(EXIT_SUCCESS);
-  }
- 
-  umask(0);
-
-  sid = setsid();
-
-  if(sid < 0)
-  {
-    exit(EXIT_FAILURE);
-  }
-   
-  close(STDIN_FILENO);
-  close(STDOUT_FILENO);
-  close(STDERR_FILENO);
-}
-
 //Caesar cipher algorithm
 void cipher(char message[], int key)
 {
@@ -119,7 +89,7 @@ void download(char datedirectory[])
   
   if(child_id == 0)
   {
-    //Download photos to the directory that we want --> (datedirectory)
+    //Download photos to the directory that we want --> (date directory)
     chdir(datedirectory);
     for(int i = 0; i < 10; i++)
     {
@@ -206,20 +176,72 @@ void delete(char datedirectory[])
 }
 
 //3D - Killer program
-void killerbash()
+void killerbash(int argc, char *argv[])
 {
-  FILE* killer;
-  killer = fopen("killer.sh", "w");
-  fprintf(killer, "!#/bin/bash\npkill -f soal3\n echo \'Process have been killed!\'");
-  fclose(killer);
+	pid_t child_id;
+	child_id = fork();
+	int status;
+
+	if(child_id < 0)
+  {
+	  exit(EXIT_FAILURE);
+  }
+
+	if (child_id == 0)
+	{
+		//3E- Killer program with 2 mode
+		FILE *killer = fopen("killer.sh", "w");
+		if (strcmp(argV[1], "-z") == 0)
+		{
+			//Kill program immedietly
+			fprintf(killer, "#!/bin/bash\nkillall -9 soal3\nrm \"$0\"");
+		}
+		else if (strcmp(argV[1], "-x") == 0)
+		{
+			//Kill program after done doing 3A-3C
+			fprintf(killer, "#!/bin/bash\nkill %d\nrm \"$0\"", pid);
+		}
+		fclose(killer);
+	}
+
+	else if(child_id > 0 && wait(&status) > 0)
+	{
+		//To make the bash program executable
+		char *argv[] = {"chmod", "+x", "killer.sh", NULL};
+    execv("/bin/chmod", argv);
+	}
 }
 
 //Main function
 int main(int argc, char *argv[])
 {
   int status, status2, status3, status4;
-  
-  thisisdaemon();
+
+  pid_t pid, sid;
+  pid = fork();
+
+  if(pid < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if(pid > 0)
+  {
+    exit(EXIT_SUCCESS);
+  }
+ 
+  umask(0);
+
+  sid = setsid();
+
+  if(sid < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+   
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
 
   killerbash();
 
