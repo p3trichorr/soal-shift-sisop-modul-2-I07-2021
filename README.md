@@ -154,14 +154,6 @@ void directory(char datedirectory[])
 ```
 In problem 3A, we are needed to make a directory with a name according to the timestamp, As we can see above, I already take the code for 3A from the source code, the first thing that I do is to make the format name for the directory, I use `struct tm *` command to get the localtime from my laptop, after that I use `strftime` command to break down the time so it will go like the format that the question want. And then I will get the format name for the directory that will be made by this `void directory()` function. And then to make the directory for every 40 seconds I will use `sleep` command in the main function like this
 ```
-int main(int argc, char *argv[])
-{
-  int status, status2, status3, status4;
-  
-  thisisdaemon();
-
-  killerbash();
-
   while(1)
   {
     char datedirectory[100];
@@ -180,7 +172,6 @@ int main(int argc, char *argv[])
     //Wait 40 seconds to make another directory
     sleep(40);
   }
-}
 ```
 
 **b. Download 10 photos for each directory**
@@ -303,14 +294,73 @@ void delete(char datedirectory[])
 ```
 Lastly, to solve problem 3C, I must delete the folder that has been zipped, and in this function I will write `{"rm", "-r", datedirectory, NULL}` in the child process to delete the folder that has been zipped.
 
-**d. Make a killer program**
+**d and e. Make a killer program for 2 mode**
 ```
-void killer()
+void killerbash(int argc, char *argv[], int pid)
 {
-  FILE* killer;
-  killer = fopen("killer.sh", "w");
-  fprintf(killer, "!#/bin/bash\npkill -f soal3\n echo \'Process have been killed!\'");
-  fclose(killer);
+  pid_t child_id;
+  child_id = fork();
+  int status;
+
+  if(child_id < 0)
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if (child_id == 0)
+  {
+    //3E - Killer program with 2 mode
+    FILE* killer = fopen("killer.sh", "w");
+    if (strcmp(argV[1], "-z") == 0)
+    {
+      //Kill program immediately
+      fprintf(killer, "#!/bin/bash\nkillall -9 soal3\nrm \"$0\"");
+    }
+	  
+    else if (strcmp(argV[1], "-x") == 0)
+    {
+      //Kill program after done doing 3A-3C
+      fprintf(killer, "#!/bin/bash\nkill %d\nrm\"$0\"", pid);
+    }
+    fclose(killer);
+  }
+
+  else if(child_id > 0 && wait(&status) > 0)
+  {
+    //To make the bash program executable
+    char *argv[] = {"chmod", "+x", "killer.sh", NULL};
+    execv("/bin/chmod", argv);
+  }
 }
 ```
-In problem 3D, we are needed to make a killer program and it must be a bash program, so the first thing that I do is use `FILE*` command to make the killer file or program, then I use `fopen` command to open the killer program and to be able to write in the program. After that I will use `fprint` command so I can print in the killer program, when I print the killer program I use `pkill -f soal3` command to kill all process in the soal3 program, I also use `echo` command so I will know that the process have been killed, lastly I will use `fclose` command to close the killer file or program.
+In problem 3D and 3E, we are needed to make a killer program with 2 mode the first one is with  `-z` argument so the killer program will immedeatily kill the program and the other one is with `-x` argument so the killer program will kill the program after finishing 3A until 3C, now the first thing to do is to make the file for kller program using `FILE*` command like this,
+```
+FILE* killer = fopen("killer.sh", "w");
+```
+After that I will compare the argumen that have been inputted to decide which mode that I will use using `strcmp` command, now for the `-z` argument I will use `fprintf` command so the file will print the killer program, I will use `killall -9 soal 3` so it will kill all the program immedeatily and also I will use `rm` command so the killer program will kill themselves, and for the `-x` argument it will be the same but the different is it will not use `kill all -9 soal3` instead it will use `kill` because we want the program keep running from 3A-3C first, then kill it. So the code will be like this,
+```
+ if (strcmp(argV[1], "-z") == 0)
+    {
+      //Kill program immediately
+      fprintf(killer, "#!/bin/bash\nkillall -9 soal3\nrm \"$0\"");
+    }
+	  
+    else if (strcmp(argV[1], "-x") == 0)
+    {
+      //Kill program after done doing 3A-3C
+      fprintf(killer, "#!/bin/bash\nkill %d\nrm\"$0\"", pid);
+    }
+```
+Also, I of course use `fclose` command to close the file that has been opened like this,
+```
+fclose(killer);
+```
+Lastly, I will use `chmod` command to make the bash program executeable with the code like this,
+```
+  else if(child_id > 0 && wait(&status) > 0)
+  {
+    //To make the bash program executable
+    char *argv[] = {"chmod", "+x", "killer.sh", NULL};
+    execv("/bin/chmod", argv);
+  }
+```
